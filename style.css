@@ -2597,3 +2597,11 @@ select {
   }
 
 }
+/* ボタンやメニュー項目を押したときのアニメーション */
+.btn:active,
+.icon-btn:active,
+.bottom-nav-item:active,
+button:active {
+  transform: scale(0.95) !important;
+  transition: transform 0.1s ease;
+}
