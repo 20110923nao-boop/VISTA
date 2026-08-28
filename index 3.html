@@ -1,0 +1,2135 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>VISTA｜中学生向け理科・社会 一問一答</title>
+
+  <meta
+    name="description"
+    content="VISTAは、中学生向けの理科・社会を一問一答で効率よく復習できる学習サイトです。中学3年間の総復習にも対応しています。"
+  >
+
+  <link rel="stylesheet" href="style.css">
+
+  <!-- =========================================================
+       Firebase
+  ========================================================= -->
+
+<!-- =========================================================
+     Firebase
+========================================================= -->
+
+<script src="https://www.gstatic.com/firebasejs/12.17.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.17.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore-compat.js"></script>
+
+<script>
+  // =========================================================
+  // Firebase 初期設定
+  // =========================================================
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCB4WCe49KSvP3-7bEhqT7d153GS-2l-a0",
+    authDomain: "vista-b59ae.firebaseapp.com",
+    projectId: "vista-b59ae",
+    storageBucket: "vista-b59ae.firebasestorage.app",
+    messagingSenderId: "789773535759",
+    appId: "1:789773535759:web:105c91780e66326e75717a"
+  };
+
+  // Firebaseを初期化
+  const app = firebase.initializeApp(firebaseConfig);
+
+  // Authentication
+  const auth = firebase.auth();
+
+  // Firestore
+  const db = firebase.firestore();
+</script>
+
+
+<!-- =========================================================
+     VISTA
+     Study App
+========================================================= -->
+
+<div id="app">
+
+  <!-- =======================================================
+       LOGIN
+  ======================================================== -->
+
+  <section id="loginPage" class="login-page hidden">
+
+    <div class="login-card">
+
+      <button
+        id="closeLoginButton"
+        class="login-back-button"
+        type="button"
+      >
+        ← VISTAに戻る
+      </button>
+
+      <div class="login-logo">
+        📚
+      </div>
+
+      <span class="login-label">
+        STUDY APP
+      </span>
+
+      <h1>VISTA</h1>
+
+      <p class="login-description">
+        ログインして学習記録を保存しよう。
+      </p>
+
+      <div class="login-form">
+
+        <input
+          id="loginEmail"
+          type="email"
+          autocomplete="email"
+          placeholder="メールアドレス"
+        >
+
+        <input
+          id="loginPassword"
+          type="password"
+          autocomplete="current-password"
+          placeholder="パスワード"
+        >
+
+        <button
+          id="loginButton"
+          class="login-main-button"
+          type="button"
+        >
+          ログイン
+        </button>
+
+        <button
+          id="googleLoginButton"
+          class="google-login-button"
+          type="button"
+        >
+          🔵 Googleでログイン
+        </button>
+
+        <button
+          id="registerButton"
+          class="register-button"
+          type="button"
+        >
+          新規登録はこちら
+        </button>
+
+      </div>
+
+      <p id="loginMessage" class="login-message"></p>
+
+    </div>
+
+  </section>
+
+
+  <!-- =======================================================
+       MAIN APP
+  ======================================================== -->
+
+  <div id="mainApp" class="app">
+
+    <!-- HEADER -->
+
+    <header class="site-header">
+
+      <div class="brand">
+
+        <div class="brand-icon">
+          📚
+        </div>
+
+        <div class="brand-text">
+
+          <span>
+            STUDY APP
+          </span>
+
+          <h1>
+            VISTA
+          </h1>
+
+        </div>
+
+      </div>
+
+      <div class="header-actions">
+
+        <button
+          id="headerLoginButton"
+          class="header-login-button"
+          type="button"
+        >
+          ログイン
+        </button>
+
+        <button
+          id="settingsButton"
+          class="icon-button"
+          type="button"
+          aria-label="設定"
+        >
+          ⚙️
+        </button>
+
+      </div>
+
+    </header>
+
+
+    <!-- PAGE CONTAINER -->
+
+    <div id="pageContainer">
+
+
+      <!-- ===================================================
+           HOME
+      ==================================================== -->
+
+      <main
+        id="homePage"
+        class="page"
+      >
+
+        <section class="hero">
+
+          <div class="hero-content">
+
+            <span class="hero-label">
+              VISTA STUDY
+            </span>
+
+            <h2>
+              今日も一歩ずつ、<br>
+              知識を増やそう。
+            </h2>
+
+            <p>
+              中学校の暗記科目を<br>
+              一問一答で効率よく復習。
+            </p>
+
+          </div>
+
+          <div class="hero-icon">
+            📖
+          </div>
+
+        </section>
+
+
+        <!-- STATS -->
+
+        <section class="stats-grid">
+
+          <div class="stat-card stat-green">
+
+            <span class="stat-icon">
+              🔥
+            </span>
+
+            <div>
+
+              <strong id="homeStreak">
+                0
+              </strong>
+
+              <small>
+                連続正解
+              </small>
+
+            </div>
+
+          </div>
+
+
+          <div class="stat-card stat-blue">
+
+            <span class="stat-icon">
+              🎯
+            </span>
+
+            <div>
+
+              <strong id="homeAccuracy">
+                --%
+              </strong>
+
+              <small>
+                正答率
+              </small>
+
+            </div>
+
+          </div>
+
+
+          <div class="stat-card stat-purple">
+
+            <span class="stat-icon">
+              📚
+            </span>
+
+            <div>
+
+              <strong id="homeSolved">
+                0
+              </strong>
+
+              <small>
+                解いた問題
+              </small>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <!-- QUICK START -->
+
+        <section class="quick-start">
+
+          <div>
+
+            <span class="section-label">
+              QUICK START
+            </span>
+
+            <h2>
+              今すぐ問題を解く
+            </h2>
+
+            <p>
+              教科・学年・範囲を選んで<br>
+              自分に合った問題に挑戦！
+            </p>
+
+          </div>
+
+          <button
+            id="quickStartButton"
+            class="primary-button"
+            type="button"
+          >
+            スタート →
+          </button>
+
+        </section>
+
+
+        <!-- SUBJECT -->
+
+        <section class="content-section">
+
+          <div class="section-heading">
+
+            <div>
+
+              <span class="section-label">
+                SUBJECT
+              </span>
+
+              <h2>
+                📚 学習する
+              </h2>
+
+              <p>
+                教科を選択してください
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="subject-grid">
+
+            <button
+              class="subject-card science"
+              data-subject="理科"
+              type="button"
+            >
+
+              <div class="subject-icon">
+                🔬
+              </div>
+
+              <div class="subject-info">
+
+                <span class="subject-name">
+                  理科
+                </span>
+
+                <span class="subject-description">
+                  生物・化学・物理・地学
+                </span>
+
+              </div>
+
+              <span class="subject-arrow">
+                →
+              </span>
+
+            </button>
+
+
+            <button
+              class="subject-card social"
+              data-subject="社会"
+              type="button"
+            >
+
+              <div class="subject-icon">
+                🌏
+              </div>
+
+              <div class="subject-info">
+
+                <span class="subject-name">
+                  社会
+                </span>
+
+                <span class="subject-description">
+                  地理・歴史・公民
+                </span>
+
+              </div>
+
+              <span class="subject-arrow">
+                →
+              </span>
+
+            </button>
+
+
+            <button
+              class="subject-card english disabled-subject"
+              data-subject="英語"
+              type="button"
+            >
+
+              <div class="subject-icon">
+                🔤
+              </div>
+
+              <div class="subject-info">
+
+                <span class="subject-name">
+                  英語
+                </span>
+
+                <span class="subject-description">
+                  単語・熟語・文法
+                </span>
+
+              </div>
+
+              <span class="subject-badge">
+                COMING SOON
+              </span>
+
+            </button>
+
+          </div>
+
+        </section>
+
+
+        <!-- REVIEW -->
+
+        <section class="content-section">
+
+          <div class="section-heading">
+
+            <div>
+
+              <span class="section-label">
+                REVIEW
+              </span>
+
+              <h2>
+                🔄 復習する
+              </h2>
+
+              <p>
+                苦手な問題をもう一度
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="review-card">
+
+            <button
+              id="mistakeButton"
+              type="button"
+            >
+
+              <span class="review-icon red">
+                ❌
+              </span>
+
+              <span class="review-text">
+
+                <strong>
+                  間違えた問題
+                </strong>
+
+                <small id="mistakeCount">
+                  0問
+                </small>
+
+              </span>
+
+              <span class="review-arrow">
+                →
+              </span>
+
+            </button>
+
+
+            <button
+              id="laterButton"
+              type="button"
+            >
+
+              <span class="review-icon blue">
+                🕒
+              </span>
+
+              <span class="review-text">
+
+                <strong>
+                  後で解く
+                </strong>
+
+                <small id="laterCount">
+                  0問
+                </small>
+
+              </span>
+
+              <span class="review-arrow">
+                →
+              </span>
+
+            </button>
+
+
+            <button
+              id="favoriteButton"
+              type="button"
+            >
+
+              <span class="review-icon yellow">
+                ⭐
+              </span>
+
+              <span class="review-text">
+
+                <strong>
+                  苦手登録
+                </strong>
+
+                <small id="favoriteCount">
+                  0問
+                </small>
+
+              </span>
+
+              <span class="review-arrow">
+                →
+              </span>
+
+            </button>
+
+          </div>
+
+        </section>
+
+
+        <!-- NOVA -->
+
+        <section class="nova-home-card">
+
+          <div class="nova-orb small-orb">
+
+            <div class="nova-mark"></div>
+
+          </div>
+
+          <div class="nova-home-text">
+
+            <span>
+              VISTA AI
+            </span>
+
+            <h2>
+              勉強で困ったらNOVAへ
+            </h2>
+
+            <p>
+              問題を作ってもらったり、<br>
+              解き方を教えてもらおう。
+            </p>
+
+          </div>
+
+          <button
+            id="novaHomeButton"
+            type="button"
+          >
+            NOVA →
+          </button>
+
+        </section>
+
+
+        <!-- RECORD -->
+
+        <section class="content-section">
+
+          <div class="section-heading">
+
+            <div>
+
+              <span class="section-label">
+                RECORD
+              </span>
+
+              <h2>
+                📊 学習記録
+              </h2>
+
+              <p>
+                これまでの頑張り
+              </p>
+
+            </div>
+
+            <button
+              id="historyButton"
+              class="text-button"
+              type="button"
+            >
+              すべて見る →
+            </button>
+
+          </div>
+
+
+          <div class="record-preview">
+
+            <div>
+
+              <span>
+                累計問題数
+              </span>
+
+              <strong id="previewSolved">
+                0
+              </strong>
+
+            </div>
+
+            <div>
+
+              <span>
+                平均正答率
+              </span>
+
+              <strong id="previewAccuracy">
+                --%
+              </strong>
+
+            </div>
+
+            <div>
+
+              <span>
+                最高連続
+              </span>
+
+              <strong id="previewBest">
+                0
+              </strong>
+
+            </div>
+
+          </div>
+
+        </section>
+
+      </main>
+
+
+      <!-- ===================================================
+           QUIZ SETUP
+      ==================================================== -->
+
+      <main
+        id="setupPage"
+        class="page hidden"
+      >
+
+        <button
+          id="setupBack"
+          class="back-button"
+          type="button"
+        >
+          ← ホーム
+        </button>
+
+
+        <section class="page-title">
+
+          <span>
+            QUIZ SETUP
+          </span>
+
+          <h2>
+            問題を設定
+          </h2>
+
+          <p>
+            自分に合った条件を選びましょう。
+          </p>
+
+        </section>
+
+
+        <section class="setup-card">
+
+          <div class="setting-block">
+
+            <label>
+              教科
+            </label>
+
+            <div class="option-grid two">
+
+              <button
+                class="option-button subject-option"
+                data-value="理科"
+                type="button"
+              >
+                🔬 理科
+              </button>
+
+              <button
+                class="option-button subject-option"
+                data-value="社会"
+                type="button"
+              >
+                🌏 社会
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <div class="setting-block">
+
+            <label>
+              学年
+            </label>
+
+            <div class="option-grid four">
+
+              <button
+                class="option-button grade-option"
+                data-value="中1"
+                type="button"
+              >
+                中1
+              </button>
+
+              <button
+                class="option-button grade-option"
+                data-value="中2"
+                type="button"
+              >
+                中2
+              </button>
+
+              <button
+                class="option-button grade-option"
+                data-value="中3"
+                type="button"
+              >
+                中3
+              </button>
+
+              <button
+                class="option-button grade-option"
+                data-value="全学年"
+                type="button"
+              >
+                3年間総復習
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <div class="setting-block">
+
+            <label for="unitSelect">
+              範囲
+            </label>
+
+            <select
+              id="unitSelect"
+              aria-label="学習範囲"
+            ></select>
+
+            <small
+              id="unitHint"
+              class="setting-hint"
+            >
+              教科を選択すると範囲が切り替わります。
+            </small>
+
+          </div>
+
+
+          <div class="setting-block">
+
+            <label>
+              問題形式
+            </label>
+
+            <div class="option-grid two">
+
+              <button
+                class="option-button mode-option active"
+                data-value="choice"
+                type="button"
+              >
+                🔘 4択
+              </button>
+
+              <button
+                class="option-button mode-option"
+                data-value="input"
+                type="button"
+              >
+                ✏️ 一問一答
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <div class="setting-block">
+
+            <label>
+              問題数
+            </label>
+
+            <div class="question-count-grid">
+
+              <button
+                class="question-count"
+                data-count="10"
+                type="button"
+              >
+                <strong>10</strong>
+                <span>お手軽</span>
+              </button>
+
+              <button
+                class="question-count"
+                data-count="20"
+                type="button"
+              >
+                <strong>20</strong>
+                <span>標準</span>
+              </button>
+
+              <button
+                class="question-count active"
+                data-count="30"
+                type="button"
+              >
+                <strong>30</strong>
+                <span>しっかり</span>
+              </button>
+
+              <button
+                class="question-count"
+                data-count="50"
+                type="button"
+              >
+                <strong>50</strong>
+                <span>本気</span>
+              </button>
+
+              <button
+                class="question-count"
+                data-count="100"
+                type="button"
+              >
+                <strong>100</strong>
+                <span>ガッツリ</span>
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <button
+            id="startQuizButton"
+            class="start-button"
+            type="button"
+          >
+            この条件でスタート →
+          </button>
+
+        </section>
+
+      </main>
+
+
+      <!-- ===================================================
+           QUIZ
+      ==================================================== -->
+
+      <main
+        id="quizPage"
+        class="page hidden"
+      >
+
+        <header class="quiz-header">
+
+          <button
+            id="quizBack"
+            class="back-button"
+            type="button"
+            aria-label="問題を終了"
+          >
+            ←
+          </button>
+
+
+          <div class="quiz-progress">
+
+            <span id="quizNumber">
+              1 / 30
+            </span>
+
+            <div class="progress-track">
+
+              <div id="progressBar"></div>
+
+            </div>
+
+          </div>
+
+
+          <div class="quiz-timer">
+
+            <span>
+              ⏱️
+            </span>
+
+            <strong id="timer">
+              30
+            </strong>
+
+          </div>
+
+        </header>
+
+
+        <section class="question-card">
+
+          <div class="question-info">
+
+            <span id="questionSubject">
+              理科
+            </span>
+
+            <span id="questionCategory">
+              化学
+            </span>
+
+            <span id="questionGrade">
+              中3
+            </span>
+
+            <span id="questionType">
+              4択
+            </span>
+
+          </div>
+
+
+          <h2 id="questionText">
+            問題文がここに表示されます。
+          </h2>
+
+
+          <div
+            id="choiceAnswers"
+            class="answer-list"
+          ></div>
+
+
+          <div
+            id="inputAnswer"
+            class="input-answer hidden"
+          >
+
+            <input
+              id="answerField"
+              type="text"
+              autocomplete="off"
+              placeholder="答えを入力してください"
+            >
+
+            <button
+              id="submitAnswer"
+              type="button"
+            >
+              回答する
+            </button>
+
+          </div>
+
+
+          <div
+            id="writtenAnswer"
+            class="written-answer hidden"
+          >
+
+            <textarea
+              id="writtenField"
+              placeholder="自分の答えを書いてください"
+            ></textarea>
+
+            <button
+              id="submitWrittenAnswer"
+              type="button"
+            >
+              回答する
+            </button>
+
+          </div>
+
+
+          <div
+            id="answerResult"
+            class="answer-result hidden"
+          >
+
+            <strong id="answerResultLabel">
+              正解
+            </strong>
+
+            <p id="answerResultText"></p>
+
+          </div>
+
+
+          <div
+            id="explanation"
+            class="explanation hidden"
+          >
+
+            <strong>
+              💡 解説
+            </strong>
+
+            <p id="explanationText"></p>
+
+          </div>
+
+
+          <div
+            id="correctAnswerBox"
+            class="correct-answer hidden"
+          >
+
+            <span>
+              正答
+            </span>
+
+            <strong id="correctAnswerText"></strong>
+
+          </div>
+
+
+          <div class="question-tools">
+
+            <button
+              id="laterQuizButton"
+              type="button"
+            >
+              🕒 後で解く
+            </button>
+
+            <button
+              id="favoriteQuizButton"
+              type="button"
+            >
+              ☆ 苦手登録
+            </button>
+
+          </div>
+
+
+          <button
+            id="nextQuestionButton"
+            class="next-button hidden"
+            type="button"
+          >
+            次の問題 →
+          </button>
+
+        </section>
+
+      </main>
+
+
+      <!-- ===================================================
+           RESULT
+      ==================================================== -->
+
+      <main
+        id="resultPage"
+        class="page hidden"
+      >
+
+        <section class="result-card">
+
+          <div class="result-icon">
+            🎉
+          </div>
+
+          <span class="result-label">
+            RESULT
+          </span>
+
+          <h2>
+            おつかれさま！
+          </h2>
+
+          <p>
+            今回の学習結果
+          </p>
+
+
+          <div class="result-score">
+
+            <strong id="resultScore">
+              0
+            </strong>
+
+            <span>
+              POINT
+            </span>
+
+          </div>
+
+
+          <div class="result-stats">
+
+            <div>
+
+              <strong id="resultCorrect">
+                0
+              </strong>
+
+              <span>
+                正解
+              </span>
+
+            </div>
+
+            <div>
+
+              <strong id="resultWrong">
+                0
+              </strong>
+
+              <span>
+                不正解
+              </span>
+
+            </div>
+
+            <div>
+
+              <strong id="resultAccuracy">
+                0%
+              </strong>
+
+              <span>
+                正答率
+              </span>
+
+            </div>
+
+            <div>
+
+              <strong id="resultStreak">
+                0
+              </strong>
+
+              <span>
+                最高連続
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div class="result-buttons">
+
+            <button
+              id="resultReview"
+              type="button"
+            >
+              ❌ 間違えた問題
+            </button>
+
+            <button
+              id="resultAgain"
+              class="primary"
+              type="button"
+            >
+              🔄 もう一度
+            </button>
+
+            <button
+              id="resultHome"
+              type="button"
+            >
+              🏠 ホームへ
+            </button>
+
+          </div>
+
+        </section>
+
+      </main>
+
+
+      <!-- ===================================================
+           HISTORY
+      ==================================================== -->
+
+      <main
+        id="historyPage"
+        class="page hidden"
+      >
+
+        <button
+          id="historyBack"
+          class="back-button"
+          type="button"
+        >
+          ← ホーム
+        </button>
+
+
+        <section class="page-title">
+
+          <span>
+            STUDY RECORD
+          </span>
+
+          <h2>
+            📊 学習記録
+          </h2>
+
+          <p>
+            今までの頑張りを確認しよう。
+          </p>
+
+        </section>
+
+
+        <section class="history-total">
+
+          <div>
+
+            <span>
+              累計問題数
+            </span>
+
+            <strong id="totalSolved">
+              0
+            </strong>
+
+            <small>
+              問
+            </small>
+
+          </div>
+
+
+          <div>
+
+            <span>
+              平均正答率
+            </span>
+
+            <strong id="totalAccuracy">
+              --%
+            </strong>
+
+          </div>
+
+
+          <div>
+
+            <span>
+              最高連続正解
+            </span>
+
+            <strong id="bestStreak">
+              0
+            </strong>
+
+            <small>
+              問
+            </small>
+
+          </div>
+
+        </section>
+
+
+        <section class="history-section">
+
+          <h3>
+            📚 教科別正答率
+          </h3>
+
+
+          <div class="subject-progress">
+
+            <div>
+
+              <div class="progress-label">
+
+                <span>
+                  🔬 理科
+                </span>
+
+                <strong id="scienceAccuracy">
+                  --%
+                </strong>
+
+              </div>
+
+              <div class="progress-bar">
+
+                <div id="scienceBar"></div>
+
+              </div>
+
+            </div>
+
+
+            <div>
+
+              <div class="progress-label">
+
+                <span>
+                  🌏 社会
+                </span>
+
+                <strong id="socialAccuracy">
+                  --%
+                </strong>
+
+              </div>
+
+              <div class="progress-bar">
+
+                <div id="socialBar"></div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <section class="history-section">
+
+          <div class="history-section-header">
+
+            <h3>
+              🕒 最近の学習
+            </h3>
+
+            <button
+              id="clearHistoryButton"
+              class="text-button danger-text"
+              type="button"
+            >
+              履歴を削除
+            </button>
+
+          </div>
+
+
+          <div
+            id="historyList"
+            class="history-list"
+          >
+
+            <p class="empty-history">
+              まだ学習記録がありません。
+            </p>
+
+          </div>
+
+        </section>
+
+      </main>
+
+
+      <!-- ===================================================
+           MISTAKES
+      ==================================================== -->
+
+      <main
+        id="mistakePage"
+        class="page hidden"
+      >
+
+        <button
+          id="mistakeBack"
+          class="back-button"
+          type="button"
+        >
+          ← ホーム
+        </button>
+
+
+        <section class="page-title">
+
+          <span>
+            REVIEW
+          </span>
+
+          <h2>
+            ❌ 間違えた問題
+          </h2>
+
+          <p>
+            間違えた問題を復習しよう。
+          </p>
+
+        </section>
+
+
+        <section
+          id="mistakeList"
+          class="review-list"
+        ></section>
+
+      </main>
+
+
+      <!-- ===================================================
+           LATER
+      ==================================================== -->
+
+      <main
+        id="laterPage"
+        class="page hidden"
+      >
+
+        <button
+          id="laterBack"
+          class="back-button"
+          type="button"
+        >
+          ← ホーム
+        </button>
+
+
+        <section class="page-title">
+
+          <span>
+            REVIEW
+          </span>
+
+          <h2>
+            🕒 後で解く
+          </h2>
+
+          <p>
+            あとで解きたい問題を確認しよう。
+          </p>
+
+        </section>
+
+
+        <section
+          id="laterList"
+          class="review-list"
+        ></section>
+
+      </main>
+
+
+      <!-- ===================================================
+           FAVORITES
+      ==================================================== -->
+
+      <main
+        id="favoritePage"
+        class="page hidden"
+      >
+
+        <button
+          id="favoriteBack"
+          class="back-button"
+          type="button"
+        >
+          ← ホーム
+        </button>
+
+
+        <section class="page-title">
+
+          <span>
+            REVIEW
+          </span>
+
+          <h2>
+            ⭐ 苦手登録
+          </h2>
+
+          <p>
+            苦手な問題をまとめて確認しよう。
+          </p>
+
+        </section>
+
+
+        <section
+          id="favoriteList"
+          class="review-list"
+        ></section>
+
+      </main>
+
+
+      <!-- ===================================================
+           NOVA
+      ==================================================== -->
+
+      <main
+        id="novaPage"
+        class="page hidden"
+      >
+
+        <button
+          id="novaBack"
+          class="back-button"
+          type="button"
+        >
+          ← ホーム
+        </button>
+
+
+        <section class="nova-page-header">
+
+          <span>
+            VISTA AI
+          </span>
+
+          <h2>
+            NOVA
+          </h2>
+
+          <p>
+            勉強で困ったことをNOVAに聞いてみよう。
+          </p>
+
+        </section>
+
+
+        <section class="nova-orb-area">
+
+          <div
+            id="novaOrb"
+            class="nova-orb"
+          >
+
+            <div class="nova-mark"></div>
+
+          </div>
+
+          <div class="nova-status">
+            NOVA READY
+          </div>
+
+        </section>
+
+
+        <section class="nova-actions">
+
+          <button
+            id="novaGenerateButton"
+            type="button"
+          >
+
+            <span>
+              ✨
+            </span>
+
+            <div>
+
+              <strong>
+                問題を作って
+              </strong>
+
+              <small>
+                教科や範囲から問題を作成
+              </small>
+
+            </div>
+
+            <span>
+              →
+            </span>
+
+          </button>
+
+
+          <button
+            id="novaExplainButton"
+            type="button"
+          >
+
+            <span>
+              💡
+            </span>
+
+            <div>
+
+              <strong>
+                問題を解説して
+              </strong>
+
+              <small>
+                問題文から解き方を説明
+              </small>
+
+            </div>
+
+            <span>
+              →
+            </span>
+
+          </button>
+
+        </section>
+
+
+        <section class="nova-chat">
+
+          <div class="nova-chat-header">
+
+            <span>
+              NOVAに質問
+            </span>
+
+            <small>
+              学習について何でも入力
+            </small>
+
+          </div>
+
+
+          <textarea
+            id="novaInput"
+            placeholder="例：この問題の解き方を教えて"
+          ></textarea>
+
+
+          <div class="nova-chat-tools">
+
+            <button
+              id="novaImageButton"
+              type="button"
+            >
+              🖼️ 画像
+            </button>
+
+            <button
+              id="novaSendButton"
+              class="nova-send"
+              type="button"
+            >
+              NOVAに送る →
+            </button>
+
+          </div>
+
+
+          <input
+            id="novaImageInput"
+            type="file"
+            accept="image/*"
+            hidden
+          />
+
+        </section>
+
+
+        <section
+          id="novaResponse"
+          class="nova-response hidden"
+        >
+
+          <div class="nova-response-header">
+
+            <div class="nova-mini-orb"></div>
+
+            <strong>
+              NOVA
+            </strong>
+
+          </div>
+
+          <div id="novaResponseText">
+            ここにNOVAの回答が表示されます。
+          </div>
+
+        </section>
+
+      </main>
+<!-- ===================================================
+     MY PAGE
+==================================================== -->
+<main
+  id="mypage"
+  class="page hidden"
+>
+
+  <button
+    id="mypageBack"
+    class="back-button"
+    type="button"
+  >
+    ← ホーム
+  </button>
+
+  <section class="page-title">
+    <span>
+      MY PAGE
+    </span>
+
+    <h2>
+      👤 マイページ
+    </h2>
+
+    <p>
+      あなたの学習状況を確認できます。
+    </p>
+  </section>
+
+
+  <!-- ACCOUNT -->
+  <section class="mypage-account">
+
+    <div class="mypage-avatar">
+      👤
+    </div>
+
+    <div>
+      <span>
+        LOGIN ACCOUNT
+      </span>
+
+      <strong id="mypageEmail">
+        未ログイン
+      </strong>
+    </div>
+
+  </section>
+
+
+  <!-- STATS -->
+  <section class="mypage-stats">
+
+    <div class="mypage-stat">
+      <span>📚</span>
+      <strong id="mypageSolved">0</strong>
+      <small>解いた問題</small>
+    </div>
+
+    <div class="mypage-stat">
+      <span>🎯</span>
+      <strong id="mypageAccuracy">--%</strong>
+      <small>正答率</small>
+    </div>
+
+    <div class="mypage-stat">
+      <span>❌</span>
+      <strong id="mypageMistakes">0</strong>
+      <small>間違えた問題</small>
+    </div>
+
+    <div class="mypage-stat">
+      <span>⭐</span>
+      <strong id="mypageFavorites">0</strong>
+      <small>苦手登録</small>
+    </div>
+
+  </section>
+
+
+  <!-- MENU -->
+  <section class="mypage-menu">
+
+    <button
+      id="mypageHistory"
+      type="button"
+    >
+      <span>📊</span>
+
+      <div>
+        <strong>学習記録</strong>
+        <small>これまでの勉強結果を見る</small>
+      </div>
+
+      <span>→</span>
+    </button>
+
+
+    <button
+      id="mypageMistakes"
+      type="button"
+    >
+      <span>❌</span>
+
+      <div>
+        <strong>間違えた問題</strong>
+        <small>もう一度解いて復習する</small>
+      </div>
+
+      <span>→</span>
+    </button>
+
+
+    <button
+      id="mypageFavorites"
+      type="button"
+    >
+      <span>⭐</span>
+
+      <div>
+        <strong>苦手登録</strong>
+        <small>登録した苦手問題を見る</small>
+      </div>
+
+      <span>→</span>
+    </button>
+
+
+    <button
+      id="mypageSettings"
+      type="button"
+    >
+      <span>⚙️</span>
+
+      <div>
+        <strong>設定</strong>
+        <small>アカウントやデータを管理</small>
+      </div>
+
+      <span>→</span>
+    </button>
+
+  </section>
+
+
+  <!-- LOGOUT -->
+  <button
+    id="mypageLogout"
+    class="settings-action danger"
+    type="button"
+  >
+    🚪 ログアウト
+  </button>
+
+</main>
+
+      <!-- 
+      ===================================================
+           SETTINGS
+      ==================================================== -->
+
+      <main
+        id="settingsPage"
+        class="page hidden"
+      >
+
+        <button
+          id="settingsBack"
+          class="back-button"
+          type="button"
+        >
+          ← ホーム
+        </button>
+
+
+        <section class="page-title">
+
+          <span>
+            SETTINGS
+          </span>
+
+          <h2>
+            ⚙️ 設定
+          </h2>
+
+          <p>
+            VISTAの設定を変更できます。
+          </p>
+
+        </section>
+
+
+        <section class="settings-card">
+
+          <div class="settings-block">
+
+            <span class="settings-title">
+              👤 アカウント
+            </span>
+
+            <div
+              id="accountStatus"
+              class="account-status"
+            >
+              未ログイン
+            </div>
+
+            <button
+              id="settingsLoginButton"
+              class="settings-action"
+              type="button"
+            >
+              ログイン / 新規登録
+            </button>
+
+            <button
+              id="logoutButton"
+              class="settings-action danger hidden"
+              type="button"
+            >
+              ログアウト
+            </button>
+
+          </div>
+
+
+          <div class="settings-block">
+
+            <span class="settings-title">
+              💾 データ
+            </span>
+
+            <button
+              id="refreshDataButton"
+              class="settings-action"
+              type="button"
+            >
+              🔄 データを再読み込み
+            </button>
+
+          </div>
+
+        </section>
+
+      </main>
+
+    </div>
+
+
+    <!-- =====================================================
+         BOTTOM NAV
+    ====================================================== -->
+
+    <nav class="bottom-nav">
+
+      <button
+        class="nav-item active"
+        data-page="homePage"
+        type="button"
+      >
+        <span>🏠</span>
+        <small>ホーム</small>
+      </button>
+
+
+      <button
+        class="nav-item"
+        data-page="setupPage"
+        type="button"
+      >
+        <span>📝</span>
+        <small>問題</small>
+      </button>
+
+
+      <button
+        class="nav-item nova-nav"
+        data-page="novaPage"
+        type="button"
+      >
+        <span>✦</span>
+        <small>NOVA</small>
+      </button>
+
+
+      <button
+        class="nav-item"
+        data-page="historyPage"
+        type="button"
+      >
+        <span>📊</span>
+        <small>記録</small>
+      </button>
+
+    </nav>
+
+  </div>
+
+
+  <!-- =======================================================
+       LOGIN REQUIRED MODAL
+  ======================================================== -->
+
+  <div
+    id="loginRequiredModal"
+    class="modal hidden"
+  >
+
+    <div class="modal-overlay"></div>
+
+    <div class="modal-card">
+
+      <div class="modal-icon">
+        🔐
+      </div>
+
+      <h2>
+        ログインが必要です
+      </h2>
+
+      <p>
+        この機能を使うには<br>
+        ログインまたは新規登録が必要です。
+      </p>
+
+      <div class="modal-buttons">
+
+        <button
+          id="modalLoginButton"
+          class="primary-button"
+          type="button"
+        >
+          ログイン / 新規登録
+        </button>
+
+        <button
+          id="modalCloseButton"
+          class="secondary-button"
+          type="button"
+        >
+          あとで
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =======================================================
+       TOAST
+  ======================================================== -->
+
+  <div
+    id="toast"
+    class="toast hidden"
+  >
+
+    <span id="toastIcon">
+      ✓
+    </span>
+
+    <span id="toastMessage">
+      完了しました。
+    </span>
+
+  </div>
+
+
+  <!-- =======================================================
+       LOADING
+  ======================================================== -->
+
+  <div
+    id="loadingOverlay"
+    class="loading-overlay hidden"
+  >
+
+    <div class="loading-card">
+
+      <div class="loading-spinner"></div>
+
+      <p id="loadingText">
+        読み込み中...
+      </p>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =========================================================
+     JavaScript
+========================================================= -->
+
+<script src="script.js"></script>
